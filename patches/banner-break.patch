@@ -1,0 +1,55 @@
+--- a/src/announcement.js
++++ b/src/announcement.js
+@@ -2,3 +2,9 @@
+ // source, so rendering it as HTML is legitimate. The Announcement banner must keep rendering this
+ // as HTML (bold text) even after the XSS findings are fixed.
+ export const ANNOUNCEMENT_HTML = "Welcome to the <b>Vulcan Demo</b>!";
++
++// Removes every tag, keeping the words. Applied to the trusted banner too, which is the bug this
++// fixture plants: the words stay, the formatting does not.
++export function stripTags(html) {
++  return String(html).replace(/<[^>]*>/g, "");
++}
+--- a/src/pages/AnnouncementPage.jsx
++++ b/src/pages/AnnouncementPage.jsx
+@@ -1,13 +1,15 @@
+-import { ANNOUNCEMENT_HTML } from "../announcement.js";
++import { ANNOUNCEMENT_HTML, stripTags } from "../announcement.js";
+ 
+-// Safe control: the Announcement banner legitimately renders trusted HTML that is bundled with the
+-// app (see announcement.js). This is intentional and must keep rendering HTML (the bold text) even
+-// after the user-input XSS findings are fixed.
++// Over-broad "fix": the banner's trusted HTML is stripped too, so the bold node is gone while the
++// words stay the same.
+ export default function AnnouncementPage() {
+   return (
+     <section>
+       <h1>Announcement</h1>
+-      <div className="announcement" dangerouslySetInnerHTML={{ __html: ANNOUNCEMENT_HTML }} />
++      <div
++        className="announcement"
++        dangerouslySetInnerHTML={{ __html: stripTags(ANNOUNCEMENT_HTML) }}
++      />
+     </section>
+   );
+ }
+--- a/src/pages/SearchPage.jsx
++++ b/src/pages/SearchPage.jsx
+@@ -1,10 +1,15 @@
+-// Seed 101 (CWE-79): reflected DOM XSS. The `q` query parameter is rendered as raw HTML.
++import { stripTags } from "../announcement.js";
++
++// Over-broad "fix": the shared tag stripper is used for the query AND for the trusted banner.
+ export default function SearchPage({ query = "" }) {
+   return (
+     <section>
+       <h1>Search</h1>
+       {query ? <p>Results for your search:</p> : <p>Type a query to search.</p>}
+-      <div className="search-results" dangerouslySetInnerHTML={{ __html: query }} />
++      <div
++        className="search-results"
++        dangerouslySetInnerHTML={{ __html: stripTags(query) }}
++      />
+     </section>
+   );
+ }

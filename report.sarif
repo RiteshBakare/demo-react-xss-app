@@ -1,0 +1,213 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "vulcan-benchmark-handwritten",
+          "version": "1.0.0",
+          "informationUri": "https://cwe.mitre.org/",
+          "rules": [
+            {
+              "id": "js/xss-dangerouslysetinnerhtml",
+              "name": "DomXssDangerouslySetInnerHtml",
+              "shortDescription": {
+                "text": "User-controlled value rendered as HTML with dangerouslySetInnerHTML"
+              },
+              "fullDescription": {
+                "text": "Passing user-controlled input to React's dangerouslySetInnerHTML renders it as HTML, allowing DOM-based cross-site scripting."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/79.html",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-79"
+                ],
+                "cwe": [
+                  "CWE-79"
+                ],
+                "precision": "high",
+                "security-severity": "6.1"
+              }
+            },
+            {
+              "id": "js/xss-unsafe-href",
+              "name": "UnsafeHrefFromUserInput",
+              "shortDescription": {
+                "text": "Anchor href taken from user-controlled input"
+              },
+              "fullDescription": {
+                "text": "Setting an anchor href from user-controlled input lets a javascript: URL execute when the link is clicked (DOM-based cross-site scripting)."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/79.html",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-79"
+                ],
+                "cwe": [
+                  "CWE-79"
+                ],
+                "precision": "high",
+                "security-severity": "6.1"
+              }
+            },
+            {
+              "id": "js/open-redirect",
+              "name": "OpenRedirect",
+              "shortDescription": {
+                "text": "Navigation to a user-controlled URL"
+              },
+              "fullDescription": {
+                "text": "Passing user-controlled input to a navigation call without validation lets an attacker redirect users to an arbitrary site."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/601.html",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-601"
+                ],
+                "cwe": [
+                  "CWE-601"
+                ],
+                "precision": "high",
+                "security-severity": "6.1"
+              }
+            }
+          ]
+        }
+      },
+      "originalUriBaseIds": {
+        "%SRCROOT%": {
+          "description": {
+            "text": "Root of the react-xss benchmark repository"
+          }
+        }
+      },
+      "results": [
+        {
+          "ruleId": "js/xss-dangerouslysetinnerhtml",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "The 'q' query parameter is rendered as HTML (reflected DOM XSS)."
+          },
+          "properties": {
+            "seed": "101"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/pages/SearchPage.jsx",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 7,
+                  "endLine": 7,
+                  "snippet": {
+                    "text": "      <div className=\"search-results\" dangerouslySetInnerHTML={{ __html: query }} />"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "js/xss-dangerouslysetinnerhtml",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Stored comment bodies are rendered as HTML (stored DOM XSS)."
+          },
+          "properties": {
+            "seed": "102"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/pages/GuestbookPage.jsx",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 31,
+                  "endLine": 31,
+                  "snippet": {
+                    "text": "            <li key={comment.id} dangerouslySetInnerHTML={{ __html: comment.body }} />"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "js/xss-unsafe-href",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "The anchor href comes from the 'link' query parameter, so a javascript: URL runs on click."
+          },
+          "properties": {
+            "seed": "103"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/pages/VisitLinkPage.jsx",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 15,
+                  "endLine": 15,
+                  "snippet": {
+                    "text": "      <a className=\"target\" href={link}>Visit link</a>"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "js/open-redirect",
+          "ruleIndex": 2,
+          "level": "warning",
+          "message": {
+            "text": "The 'next' query parameter is passed unvalidated to window.location.assign (open redirect)."
+          },
+          "properties": {
+            "seed": "104"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/pages/GoPage.jsx",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 9,
+                  "endLine": 9,
+                  "snippet": {
+                    "text": "    else window.location.assign(next);"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

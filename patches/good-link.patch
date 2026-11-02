@@ -1,0 +1,36 @@
+--- a/src/pages/VisitLinkPage.jsx
++++ b/src/pages/VisitLinkPage.jsx
+@@ -1,5 +1,17 @@
+-// Seed 103 (CWE-79): unsafe URL. The anchor `href` is taken straight from the `link` query
+-// parameter, so a `javascript:` URL would run when the link is clicked.
++// Fixed: the `link` parameter is parsed and only the app's own origin (a relative path or an
++// absolute URL with the same origin) and mail links become an href. Anything else keeps the page
++// but drops the href, so the value can no longer choose where a click goes.
++function safeHref(value) {
++  try {
++    const url = new URL(value, window.location.origin);
++    if (url.protocol === "mailto:") return value;
++    if (url.origin === window.location.origin) return value;
++    return null;
++  } catch {
++    return null;
++  }
++}
++
+ export default function VisitLinkPage({ link = "" }) {
+   if (!link) {
+     return (
+@@ -9,10 +21,12 @@
+       </section>
+     );
+   }
++  const href = safeHref(link);
+   return (
+     <section>
+       <h1>Visit link</h1>
+-      <a className="target" href={link}>Visit link</a>
++      <a className="target" href={href ?? undefined}>Visit link</a>
++      {href ? null : <p>That link is not allowed.</p>}
+     </section>
+   );
+ }

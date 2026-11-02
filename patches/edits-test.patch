@@ -1,0 +1,26 @@
+--- a/src/pages/SearchPage.jsx
++++ b/src/pages/SearchPage.jsx
+@@ -1,10 +1,10 @@
+-// Seed 101 (CWE-79): reflected DOM XSS. The `q` query parameter is rendered as raw HTML.
++// Fixed: the `q` query parameter is rendered as text, so markup can never become DOM.
+ export default function SearchPage({ query = "" }) {
+   return (
+     <section>
+       <h1>Search</h1>
+       {query ? <p>Results for your search:</p> : <p>Type a query to search.</p>}
+-      <div className="search-results" dangerouslySetInnerHTML={{ __html: query }} />
++      <div className="search-results">{query}</div>
+     </section>
+   );
+ }
+--- a/src/pages/SearchPage.test.jsx
++++ b/src/pages/SearchPage.test.jsx
+@@ -3,6 +3,8 @@
+ import SearchPage from "./SearchPage.jsx";
+ 
+ describe("SearchPage", () => {
++  // edited by a patch
++
+   it("prompts for a query when empty", () => {
+     render(<SearchPage query="" />);
+     expect(screen.getByText("Type a query to search.")).toBeInTheDocument();

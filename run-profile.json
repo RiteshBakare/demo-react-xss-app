@@ -1,0 +1,9 @@
+{
+  "snapshot_pages": [
+    { "name": "home", "path": "/" },
+    { "name": "message-plain", "path": "/message", "query": { "text": "hello" } },
+    { "name": "message-rich-text", "path": "/message", "query": { "text": "<b>hello</b>" } },
+    { "name": "safe-link", "path": "/safe-link" },
+    { "name": "announcement", "path": "/announcement", "renders_trusted_html": true }
+  ]
+}

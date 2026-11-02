@@ -1,0 +1,22 @@
+--- a/src/pages/GuestbookPage.jsx
++++ b/src/pages/GuestbookPage.jsx
+@@ -16,8 +16,8 @@
+   }
+ }
+ 
+-// Seed 102 (CWE-79): stored DOM XSS. Each stored comment body — whether bundled or posted by a
+-// visitor and kept in localStorage — is rendered as raw HTML.
++// Fixed: a comment body is rendered as plain text, so markup in a stored comment can never
++// become DOM. The words of every comment are unchanged.
+ export default function GuestbookPage({ comments }) {
+   const all = comments ?? [...guestbookComments, ...storedComments()];
+   return (
+@@ -28,7 +28,7 @@
+       ) : (
+         <ul className="comments">
+           {all.map((comment) => (
+-            <li key={comment.id} dangerouslySetInnerHTML={{ __html: comment.body }} />
++            <li key={comment.id}>{comment.body}</li>
+           ))}
+         </ul>
+       )}
