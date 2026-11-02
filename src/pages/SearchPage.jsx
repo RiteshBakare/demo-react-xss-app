@@ -4,7 +4,7 @@ export default function SearchPage({ query = "" }) {
     <section>
       <h1>Search</h1>
       {query ? <p>Results for your search:</p> : <p>Type a query to search.</p>}
-      <div className="search-results" dangerouslySetInnerHTML={{ __html: query }} />
+      <div className="search-results">{query}</div>
     </section>
   );
 }
