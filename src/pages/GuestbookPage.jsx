@@ -28,7 +28,7 @@ export default function GuestbookPage({ comments }) {
       ) : (
         <ul className="comments">
           {all.map((comment) => (
-            <li key={comment.id} dangerouslySetInnerHTML={{ __html: comment.body }} />
+            <li key={comment.id}>{comment.body}</li>
           ))}
         </ul>
       )}
